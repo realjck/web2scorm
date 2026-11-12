@@ -9,7 +9,7 @@
   "homepage": "https://web2scorm.pxly.fr",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
+    "build": "vite build && node -e \"for (const f of ['404.html', 'app.html']) require('fs').copyFileSync('dist/index.html', 'dist/' + f)\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
