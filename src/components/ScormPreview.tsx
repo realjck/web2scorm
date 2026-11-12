@@ -19,12 +19,17 @@ import { ScormFormData } from '@/types/scorm';
 import ReactMarkdown from 'react-markdown';
 import { normalizeCompletionCode } from '@/utils/completionCode';
 
+/** Imperative handle exposed to the parent page. */
+export interface ScormPreviewHandle {
+  reset: () => void;
+}
+
 interface ScormPreviewProps {
   formData: ScormFormData;
 }
 
 // Using forwardRef to allow the component to receive a ref from its parent
-const ScormPreview = forwardRef<any, ScormPreviewProps>(({ formData }, ref) => {
+const ScormPreview = forwardRef<ScormPreviewHandle, ScormPreviewProps>(({ formData }, ref) => {
   const [enteredCode, setEnteredCode] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
   const [showAlert, setShowAlert] = useState(false);

@@ -12,7 +12,7 @@
  */
 import React, { useState, useEffect, useRef } from 'react';
 import ScormForm from '@/components/ScormForm';
-import ScormPreview from '@/components/ScormPreview';
+import ScormPreview, { ScormPreviewHandle } from '@/components/ScormPreview';
 import { ScormFormData } from '@/types/scorm';
 import { generateScormPackage } from '@/utils/scormGenerator';
 import { toast } from '@/hooks/use-toast';
@@ -37,7 +37,7 @@ const defaultFormData: ScormFormData = {
 
 const Index = () => {
   const [formData, setFormData] = useState<ScormFormData>(defaultFormData);
-  const previewRef = useRef<any>(null);
+  const previewRef = useRef<ScormPreviewHandle>(null);
 
   const saveWarningShown = useRef(false);
 
