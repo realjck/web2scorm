@@ -9,8 +9,7 @@
   "homepage": "https://realjck.github.io/web2scorm",
   "scripts": {
     "dev": "vite",
-    "copy-xsd": "copyfiles -u 1 \"src/xsd/**/*\" dist/xsd",
-    "build": "vite build && npm run copy-xsd && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
+    "build": "vite build && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -78,7 +77,6 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
-    "copyfiles": "^2.4.1",
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",

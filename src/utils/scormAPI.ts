@@ -106,15 +106,6 @@ window.addEventListener("load", initializeSCORM);
 // "unload" is unreliable in modern browsers: pagehide/beforeunload are the supported signals
 window.addEventListener("pagehide", terminateSCORM);
 window.addEventListener("beforeunload", terminateSCORM);
-
-// Function to check entered code and mark as complete if correct
-function validateCompletionCode(enteredCode, correctCode) {
-  if (enteredCode.toLowerCase() === correctCode.toLowerCase()) {
-    completeSCO();
-    return true;
-  }
-  return false;
-}
 `;
 
 // SCORM 2004 API template
