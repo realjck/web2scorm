@@ -13,6 +13,7 @@
 import { ScormFormData } from '@/types/scorm';
 import { scorm12ApiTemplate, scorm2004ApiTemplate } from './scormAPI';
 import { generateScorm12Manifest, generateScorm2004Manifest } from './manifestGenerator';
+import { normalizeCompletionCode } from './completionCode';
 import JSZip from 'jszip';
 import { marked } from 'marked';
 
@@ -160,7 +161,7 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
   const scormApi = scormVersion === '1.2' ? scorm12ApiTemplate : scorm2004ApiTemplate;
 
   // Hash the completion code if needed
-  const hashedCode = packageType === 'iframe-with-code' ? await sha256(completionCode) : '';
+  const hashedCode = packageType === 'iframe-with-code' ? await sha256(normalizeCompletionCode(completionCode)) : '';
 
   // Convert markdown to HTML and escape newlines for JavaScript
   const endMessageHtml = marked(endMessage || '# Module completed\n\nCongratulations! You have completed this module.');
@@ -327,7 +328,8 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
     ${packageType === 'iframe-with-code' ? `
     // Handle validation
     validateBtn.addEventListener('click', async () => {
-      const enteredCode = codeInput.value.trim();
+      // Same rule as normalizeCompletionCode: ignore case and surrounding spaces
+      const enteredCode = codeInput.value.trim().toLowerCase();
       const enteredCodeHash = await sha256(enteredCode);
       
       if (enteredCodeHash === correctCodeHash) {

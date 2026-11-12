@@ -18,6 +18,33 @@ const iframeHtml = (document: Document) => {
   return frame.contentDocument?.documentElement.outerHTML ?? '';
 };
 
+describe('completion code', () => {
+  const submitCode = async (completionCode: string, entered: string) => {
+    const run = await runPackage({ packageType: 'iframe-with-code', completionCode });
+    const input = run.document.getElementById('completion-code') as HTMLInputElement;
+    input.value = entered;
+    (run.document.getElementById('validate-btn') as HTMLButtonElement).click();
+    await new Promise((resolve) => setTimeout(resolve, 50)); // let the async hash resolve
+    return run;
+  };
+
+  it.each([
+    ['the exact code', 'Secret42', 'Secret42'],
+    ['a different case', 'Secret42', 'sECRET42'],
+    ['surrounding spaces on the entered code', 'Secret42', '  Secret42 '],
+    ['surrounding spaces on the configured code', ' Secret42 ', 'Secret42'],
+  ])('accepts %s', async (_label, completionCode, entered) => {
+    const { api, errors } = await submitCode(completionCode, entered);
+    expect(errors).toEqual([]);
+    expect(api.values['cmi.core.lesson_status']).toBe('completed');
+  });
+
+  it('rejects a wrong code', async () => {
+    const { api } = await submitCode('Secret42', 'Secret43');
+    expect(api.values['cmi.core.lesson_status']).toBe('incomplete');
+  });
+});
+
 describe('iframe HTML content', () => {
   it.each([
     ['a closing script tag', '<p>before</p><script>var x = 1;</script><p>after</p>'],

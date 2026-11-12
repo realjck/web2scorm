@@ -85,6 +85,9 @@ export const runPackage = async (overrides: Partial<ScormFormData>, api: LmsApi 
       const key = formData.scormVersion === '1.2' ? 'API' : 'API_1484_11';
       Object.defineProperty(window, 'parent', { value: { [key]: api } });
       Object.defineProperty(window, 'opener', { value: null });
+      // Browser APIs missing from jsdom, used to hash the completion code
+      Object.assign(window, { TextEncoder });
+      Object.defineProperty(window.crypto, 'subtle', { value: globalThis.crypto.subtle });
     },
   });
   await new Promise<void>((resolve) => {

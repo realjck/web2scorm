@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScormFormData } from '@/types/scorm';
 import ReactMarkdown from 'react-markdown';
+import { normalizeCompletionCode } from '@/utils/completionCode';
 
 interface ScormPreviewProps {
   formData: ScormFormData;
@@ -50,7 +51,7 @@ const ScormPreview = forwardRef<any, ScormPreviewProps>(({ formData }, ref) => {
   }));
 
   const handleValidate = () => {
-    if (enteredCode.toLowerCase() === formData.completionCode.toLowerCase()) {
+    if (normalizeCompletionCode(enteredCode) === normalizeCompletionCode(formData.completionCode)) {
       setIsCompleted(true);
       setStatus('completed');
       setShowAlert(true);
