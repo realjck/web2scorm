@@ -145,6 +145,14 @@ const getScorm2004XsdFiles = async () => {
 const toInlineJson = (value: unknown): string =>
   JSON.stringify(value).replace(/</g, '\\u003c');
 
+/** Escapes text for use in HTML content or a double-quoted attribute. */
+const escapeHtml = (text: string): string =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
 // Generate SCORM package index.html content
 // Add this helper function at the top level
 async function sha256(message: string): Promise<string> {
@@ -175,7 +183,7 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title || 'SCORM Module'}</title>
+  <title>${escapeHtml(title || 'SCORM Module')}</title>
   <style>
     body, html {
       margin: 0;
@@ -262,10 +270,10 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
   <div class="container">
     ${packageType === 'iframe-with-code' ? `
     <div class="header">
-      ${formData.logo ? `<img src="${formData.logo}" alt="Logo">` : ''}
-      <span>${formData.codePromptMessage || "Please enter the code given at the end of the activity:"}</span>
+      ${formData.logo ? `<img src="${escapeHtml(formData.logo)}" alt="Logo">` : ''}
+      <span>${escapeHtml(formData.codePromptMessage || "Please enter the code given at the end of the activity:")}</span>
       <input type="text" id="completion-code">
-      <button id="validate-btn">${formData.buttonText || "Validate"}</button>
+      <button id="validate-btn">${escapeHtml(formData.buttonText || "Validate")}</button>
     </div>
     
     <div id="alert" class="alert hidden"></div>
@@ -334,14 +342,14 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
       
       if (enteredCodeHash === correctCodeHash) {
         isCompleted = true;
-        showAlert("${formData.alertMessageRight || "Congratulations!"}", true);
+        showAlert(${toInlineJson(formData.alertMessageRight || "Congratulations!")}, true);
         contentFrame.classList.add('hidden');
         completionSection.classList.remove('hidden');
         validateBtn.disabled = true;
         codeInput.disabled = true;
         completeSCO();
       } else {
-        showAlert("${formData.alertMessageWrong || "Incorrect code. Please try again."}", false);
+        showAlert(${toInlineJson(formData.alertMessageWrong || "Incorrect code. Please try again.")}, false);
       }
     });
     

@@ -45,6 +45,43 @@ describe('completion code', () => {
   });
 });
 
+describe('custom texts', () => {
+  const texts = {
+    title: 'Q&A <draft>',
+    codePromptMessage: 'Enter the "code" <here>:',
+    buttonText: 'OK & go',
+    alertMessageRight: 'Well done, "champion"!\nSee you soon.',
+    alertMessageWrong: "Nope: it's \"wrong\" </script>",
+  };
+
+  const submit = async (entered: string) => {
+    const run = await runPackage({ packageType: 'iframe-with-code', completionCode: 'abc', ...texts });
+    (run.document.getElementById('completion-code') as HTMLInputElement).value = entered;
+    (run.document.getElementById('validate-btn') as HTMLButtonElement).click();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    return run;
+  };
+
+  it('are displayed verbatim in the page', async () => {
+    const { document, errors } = await runPackage({ packageType: 'iframe-with-code', completionCode: 'abc', ...texts });
+
+    expect(errors).toEqual([]);
+    expect(document.title).toBe(texts.title);
+    expect(document.querySelector('.header span')?.textContent).toBe(texts.codePromptMessage);
+    expect(document.getElementById('validate-btn')?.textContent).toBe(texts.buttonText);
+  });
+
+  it.each([
+    ['right', 'abc', texts.alertMessageRight],
+    ['wrong', 'xyz', texts.alertMessageWrong],
+  ])('show the %s code alert verbatim', async (_label, entered, expected) => {
+    const { document, errors } = await submit(entered);
+
+    expect(errors).toEqual([]);
+    expect(document.getElementById('alert')?.textContent).toBe(expected);
+  });
+});
+
 describe('iframe HTML content', () => {
   it.each([
     ['a closing script tag', '<p>before</p><script>var x = 1;</script><p>after</p>'],
