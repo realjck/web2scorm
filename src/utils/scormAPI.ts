@@ -17,27 +17,30 @@ export const scorm12ApiTemplate = `
 // SCORM 1.2 API Implementation
 var API = null;
 
-function findAPI(win) {
-  if (win.API != null && typeof(win.API) === "object")
-    return win.API;
-  
-  if (win.parent && win.parent !== win)
-    return findAPI(win.parent);
-  
-  if (win.opener && win.opener !== null && win.opener !== win)
-    return findAPI(win.opener);
-  
+// Bounded, exception-safe search (as in the ADL reference algorithm): frames from
+// another origin throw on access, and a frame chain must not be walked forever.
+function findAPIInFrames(win) {
+  for (var depth = 0; win && depth < 10; depth++) {
+    try {
+      if (win.API != null && typeof(win.API) === "object") return win.API;
+      var parent = win.parent;
+      if (!parent || parent === win) return null;
+      win = parent;
+    } catch (e) {
+      return null;
+    }
+  }
   return null;
+}
+
+function findAPI(win) {
+  return findAPIInFrames(win) || (win.opener ? findAPIInFrames(win.opener) : null);
 }
 
 function getAPI() {
   if (API !== null) return API;
   
   API = findAPI(window);
-  
-  if (API === null && window.opener !== null) 
-    API = findAPI(window.opener);
-  
   return API;
 }
 
@@ -119,31 +122,30 @@ export const scorm2004ApiTemplate = `
 // SCORM 2004 API Implementation
 var API_1484_11 = null;
 
-function findAPI(win) {
-  if (win.API_1484_11 != null && typeof(win.API_1484_11) === "object") {
-    return win.API_1484_11;
+// Bounded, exception-safe search (as in the ADL reference algorithm): frames from
+// another origin throw on access, and a frame chain must not be walked forever.
+function findAPIInFrames(win) {
+  for (var depth = 0; win && depth < 10; depth++) {
+    try {
+      if (win.API_1484_11 != null && typeof(win.API_1484_11) === "object") return win.API_1484_11;
+      var parent = win.parent;
+      if (!parent || parent === win) return null;
+      win = parent;
+    } catch (e) {
+      return null;
+    }
   }
-  
-  if (win.parent && win.parent !== win) {
-    return findAPI(win.parent);
-  }
-  
-  if (win.opener && win.opener !== null && win.opener !== win) {
-    return findAPI(win.opener);
-  }
-  
   return null;
+}
+
+function findAPI(win) {
+  return findAPIInFrames(win) || (win.opener ? findAPIInFrames(win.opener) : null);
 }
 
 function getAPI() {
   if (API_1484_11 !== null) return API_1484_11;
   
   API_1484_11 = findAPI(window);
-  
-  if (API_1484_11 === null && window.opener !== null) {
-    API_1484_11 = findAPI(window.opener);
-  }
-  
   return API_1484_11;
 }
 

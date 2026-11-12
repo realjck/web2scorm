@@ -67,9 +67,14 @@ export type LmsApi = ReturnType<typeof createLmsApi>;
 
 /**
  * Generates the package index.html and runs it in jsdom with the given LMS API
- * exposed on window, resolving once the page has loaded. Script errors are collected.
+ * exposed on the parent frame (or a custom parent), resolving once the page has loaded.
+ * Script errors are collected.
  */
-export const runPackage = async (overrides: Partial<ScormFormData>, api: LmsApi = createLmsApi()) => {
+export const runPackage = async (
+  overrides: Partial<ScormFormData>,
+  api: LmsApi = createLmsApi(),
+  parent?: object,
+) => {
   const formData = { ...baseFormData, ...overrides };
   const html = await generateIndexHtml(formData);
   const errors: string[] = [];
@@ -83,7 +88,7 @@ export const runPackage = async (overrides: Partial<ScormFormData>, api: LmsApi 
     beforeParse(window) {
       // As in a real LMS, the API lives on the parent frame, not on the SCO window.
       const key = formData.scormVersion === '1.2' ? 'API' : 'API_1484_11';
-      Object.defineProperty(window, 'parent', { value: { [key]: api } });
+      Object.defineProperty(window, 'parent', { value: parent ?? { [key]: api } });
       Object.defineProperty(window, 'opener', { value: null });
       // Browser APIs missing from jsdom, used to hash the completion code
       Object.assign(window, { TextEncoder });

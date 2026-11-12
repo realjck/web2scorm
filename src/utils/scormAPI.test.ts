@@ -61,6 +61,36 @@ describe.each([
   });
 });
 
+describe.each(['1.2', '2004'] as const)('SCORM %s API discovery', (scormVersion) => {
+  const key = scormVersion === '1.2' ? 'API' : 'API_1484_11';
+
+  it('does not crash when a cross-origin frame blocks access', async () => {
+    const blockedFrame = {
+      get [key]() { throw new Error('SecurityError: Blocked a frame with origin'); },
+    };
+    const { errors } = await runPackage({ scormVersion }, createLmsApi(), blockedFrame);
+    expect(errors).toEqual([]);
+  });
+
+  it('finds the API a few frames up', async () => {
+    const api = createLmsApi();
+    const top: Record<string, unknown> = { [key]: api };
+    const middle = { parent: top };
+    top.parent = top;
+    const { errors } = await runPackage({ scormVersion }, api, { parent: middle });
+    expect(errors).toEqual([]);
+    expect(api.calls).toContain('Initialize()');
+  });
+
+  it('stops searching on a frame chain that never ends', async () => {
+    let depth = 0;
+    const endless = (): object => ({ get parent() { depth++; return endless(); } });
+    const { errors } = await runPackage({ scormVersion }, createLmsApi(), endless());
+    expect(errors).toEqual([]);
+    expect(depth).toBeLessThan(20);
+  });
+});
+
 describe('SCORM 2004 initialization', () => {
   it('marks a first attempt as incomplete', async () => {
     const api = createLmsApi({ 'cmi.completion_status': 'unknown', 'cmi.success_status': 'unknown' });
