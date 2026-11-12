@@ -87,7 +87,7 @@ See <https://www.gnu.org/licenses/> for more details.
     @apply bg-background text-foreground;
   }
   
-  html, body {
+  html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;

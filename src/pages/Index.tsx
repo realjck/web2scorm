@@ -132,11 +132,11 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-full flex flex-col">
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup
           direction="horizontal"
-          className="h-full rounded-lg border"
+          className="h-full border"
         >
           {/* Left panel: SCORM Configuration Form with ScrollArea */}
           <ResizablePanel defaultSize={33} minSize={25} className="bg-gray-100">

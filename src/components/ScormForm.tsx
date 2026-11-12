@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Download, RefreshCw, Info } from 'lucide-react';
 import { ScormFormData } from '@/types/scorm';
-import packageJson from '../../package.json';
 import {
   Tooltip,
   TooltipContent,
@@ -45,18 +44,6 @@ const ScormForm = ({ formData, onChange, onDownload, onReset, onResetPreview }: 
 
   return (
     <div className="p-6 relative">
-      <div className="absolute top-2 right-4">
-        <span className="text-xs text-gray-400">v{packageJson.version}</span>
-      </div>
-      <div className="flex mb-6">
-        <a href="https://web2scorm.pxly.fr" title="Homepage">
-          <img 
-            src="./assets/images/web2scorm_logo_1000px.png" 
-            alt="Web2SCORM Logo" 
-            className="h-24 object-contain" 
-          />
-        </a>
-      </div>
       
       <div className="space-y-8">
         {/* Section Manifest SCORM */}

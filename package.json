@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "copy-xsd": "copyfiles -u 1 \"src/xsd/**/*\" dist/xsd",
-    "build": "vite build && npm run copy-xsd",
+    "build": "vite build && npm run copy-xsd && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"

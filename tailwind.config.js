@@ -20,6 +20,8 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
+        // Tailwind's default sans stack, used by the presentation portal.
+        system: ['ui-sans-serif', 'system-ui', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
       },
       colors: {
         border: "hsl(var(--border))",
