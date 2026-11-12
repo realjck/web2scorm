@@ -10,6 +10,7 @@
  *
  * See <https://www.gnu.org/licenses/> for more details.
  */
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 
@@ -18,7 +19,9 @@ const Layout = () => (
   <div className="h-full flex flex-col">
     <Navbar />
     <main className="flex-1 min-h-0">
-      <Outlet />
+      <Suspense fallback={null}>
+        <Outlet />
+      </Suspense>
     </main>
   </div>
 );

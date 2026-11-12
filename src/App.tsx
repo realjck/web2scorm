@@ -12,11 +12,14 @@
  */
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import Home from "./pages/Home";
-import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+
+// Pages are loaded on demand: the presentation page does not download the tool's code.
+const Home = lazy(() => import("./pages/Home"));
+const Index = lazy(() => import("./pages/Index"));
 
 const App = () => (
   <TooltipProvider>
