@@ -137,6 +137,13 @@ const getScorm2004XsdFiles = async () => {
   return allFiles;
 };
 
+/**
+ * Serializes a value as JSON safe to embed in an inline <script> element:
+ * escaping "<" prevents "</script>" or "<!--" in the data from ending the element.
+ */
+const toInlineJson = (value: unknown): string =>
+  JSON.stringify(value).replace(/</g, '\\u003c');
+
 // Generate SCORM package index.html content
 // Add this helper function at the top level
 async function sha256(message: string): Promise<string> {
@@ -270,6 +277,7 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
     <iframe id="content-frame" class="content"></iframe>
   </div>
 
+  <script type="application/json" id="iframe-content">${toInlineJson(iframeContent)}</script>
   <script>
     // SCORM API Implementation
     ${scormApi}
@@ -306,11 +314,12 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
 
     // Initialize content
     window.addEventListener('DOMContentLoaded', () => {
-      ${contentIsUrl 
-        ? `contentFrame.src = "${iframeContent}";` 
+      const iframeContent = JSON.parse(document.getElementById('iframe-content').textContent);
+      ${contentIsUrl
+        ? `contentFrame.src = iframeContent;`
         : `const doc = contentFrame.contentDocument || contentFrame.contentWindow.document;
           doc.open();
-          doc.write(\`${iframeContent.replace(/`/g, '\\`')}\`);
+          doc.write(iframeContent);
           doc.close();`
       }
     });

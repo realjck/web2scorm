@@ -13,7 +13,8 @@
     "build": "vite build && npm run copy-xsd && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -82,6 +83,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "jsdom": "^26.1.0",
     "license-check-and-add": "^4.0.5",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",
@@ -89,6 +91,7 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
-    "vite-plugin-pwa": "^1.0.0"
+    "vite-plugin-pwa": "^1.0.0",
+    "vitest": "^3.2.7"
   }
 }
