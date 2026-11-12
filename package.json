@@ -6,7 +6,7 @@
   "private": true,
   "version": "0.5.0",
   "type": "module",
-  "homepage": "https://realjck.github.io/web2scorm",
+  "homepage": "https://web2scorm.pxly.fr",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",

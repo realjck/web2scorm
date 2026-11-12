@@ -21,7 +21,7 @@ import NotFound from "./pages/NotFound";
 const App = () => (
   <TooltipProvider>
     <Toaster />
-    <BrowserRouter basename="/web2scorm">
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />

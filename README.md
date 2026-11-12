@@ -4,7 +4,7 @@
 
 A web application that allows users to create SCORM-compliant e-learning packages by embedding web content through URLs or HTML code, with completion tracking capabilities.
 
-### ▶ [Launch the tool](https://realjck.github.io/web2scorm/)
+### ▶ [Launch the tool](https://web2scorm.pxly.fr/)
 
 ## Features
 

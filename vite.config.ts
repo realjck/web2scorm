@@ -15,7 +15,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
-  base: '/web2scorm/', // Ajoutez le nom de votre dépôt ici
+  base: '/', // Served at the root of the custom domain (see public/CNAME)
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
