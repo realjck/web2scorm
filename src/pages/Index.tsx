@@ -18,9 +18,7 @@ import { generateScormPackage } from '@/utils/scormGenerator';
 import { toast } from '@/hooks/use-toast';
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-// Key for storing form data in localStorage
-const STORAGE_KEY = 'scorm_form_data';
+import { loadFormData, saveFormData } from '@/utils/formStorage';
 
 // Default form data
 const defaultFormData: ScormFormData = {
@@ -41,23 +39,23 @@ const Index = () => {
   const [formData, setFormData] = useState<ScormFormData>(defaultFormData);
   const previewRef = useRef<any>(null);
 
+  const saveWarningShown = useRef(false);
+
   // Load data from localStorage on component mount
   useEffect(() => {
-    const savedData = localStorage.getItem(STORAGE_KEY);
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData);
-        setFormData(parsedData);
-      } catch (error) {
-        console.error("Failed to parse saved form data:", error);
-        setFormData(defaultFormData);
-      }
-    }
+    const savedData = loadFormData();
+    if (savedData) setFormData(savedData);
   }, []);
 
-  // Save data to localStorage whenever formData changes
+  // Save data to localStorage whenever formData changes; warn once if it does not fit
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    if (saveFormData(formData) || saveWarningShown.current) return;
+    saveWarningShown.current = true;
+    toast({
+      title: "Form not saved locally",
+      description: "Browser storage is full (the logo may be too large). Your changes will be lost on reload.",
+      variant: "destructive",
+    });
   }, [formData]);
 
   const handleFormChange = (data: Partial<ScormFormData>) => {
