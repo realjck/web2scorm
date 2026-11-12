@@ -370,6 +370,13 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
 `;
 };
 
+/** Zip file name from the module title, without characters forbidden in file names. */
+export const packageFileName = (title: string): string => {
+  // eslint-disable-next-line no-control-regex
+  const safeTitle = title.replace(/[<>:"/\\|?*\u0000-\u001f]/g, '-').trim();
+  return `${safeTitle || 'scorm-package'}.zip`;
+};
+
 // Update the generateScormPackage function to handle the async generateIndexHtml
 export const generateScormPackage = async (formData: ScormFormData): Promise<void> => {
   try {
@@ -413,10 +420,11 @@ export const generateScormPackage = async (formData: ScormFormData): Promise<voi
     // Create and trigger download
     const downloadLink = document.createElement("a");
     downloadLink.href = URL.createObjectURL(content);
-    downloadLink.download = `${formData.title || 'scorm-package'}.zip`;
+    downloadLink.download = packageFileName(formData.title);
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(downloadLink.href);
     
   } catch (error) {
     console.error("Error generating SCORM package:", error);

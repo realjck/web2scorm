@@ -12,6 +12,19 @@
  */
 import { describe, expect, it } from 'vitest';
 import { runPackage } from '@/test/runPackage';
+import { packageFileName } from './scormGenerator';
+
+describe('package file name', () => {
+  it.each([
+    ['Intro to SCORM', 'Intro to SCORM.zip'],
+    ['Module 1/2: "Basics"?', 'Module 1-2- -Basics--.zip'],
+    ['C:\\path|name*\ttab', 'C--path-name--tab.zip'],
+    ['  ', 'scorm-package.zip'],
+    ['', 'scorm-package.zip'],
+  ])('"%s" gives "%s"', (title, expected) => {
+    expect(packageFileName(title)).toBe(expected);
+  });
+});
 
 const iframeHtml = (document: Document) => {
   const frame = document.getElementById('content-frame') as HTMLIFrameElement;
