@@ -27,6 +27,31 @@ describe('SCORM 1.2 initialization', () => {
   });
 });
 
+describe.each([
+  ['1.2', 'cmi.core.session_time'],
+  ['2004', 'cmi.session_time'],
+] as const)('SCORM %s session end', (scormVersion, sessionTimeKey) => {
+  it('saves the session time and terminates when the page is hidden', async () => {
+    const { window, api } = await runPackage({ scormVersion });
+
+    window.dispatchEvent(new window.Event('pagehide'));
+
+    const setTime = api.calls.findIndex((c) => c.startsWith(`SetValue(${sessionTimeKey}`));
+    const terminate = api.calls.indexOf('Terminate()');
+    expect(setTime).toBeGreaterThanOrEqual(0);
+    expect(terminate).toBeGreaterThan(setTime);
+  });
+
+  it('terminates only once when several unload events fire', async () => {
+    const { window, api } = await runPackage({ scormVersion });
+
+    window.dispatchEvent(new window.Event('beforeunload'));
+    window.dispatchEvent(new window.Event('pagehide'));
+
+    expect(api.calls.filter((c) => c === 'Terminate()')).toHaveLength(1);
+  });
+});
+
 describe('SCORM 2004 initialization', () => {
   it('marks a first attempt as incomplete', async () => {
     const api = createLmsApi({ 'cmi.completion_status': 'unknown', 'cmi.success_status': 'unknown' });

@@ -63,16 +63,18 @@ function initializeSCORM() {
 var sessionStartTime;
 var sessionTimerInterval;
 
+var isTerminated = false;
+
+function saveSessionTime(api) {
+  const elapsedSeconds = Math.floor((new Date() - sessionStartTime) / 1000);
+  api.LMSSetValue("cmi.core.session_time", formatTime(elapsedSeconds));
+}
+
 // Track time spent in the module
 function trackTime() {
   sessionTimerInterval = setInterval(function() {
     const api = getAPI();
-    if (api) {
-      const currentTime = new Date();
-      const elapsedSeconds = Math.floor((currentTime - sessionStartTime) / 1000);
-      const formattedTime = formatTime(elapsedSeconds);
-      api.LMSSetValue("cmi.core.session_time", formattedTime);
-    }
+    if (api) saveSessionTime(api);
   }, 3000); // Update every 3 seconds
 }
 
@@ -99,15 +101,19 @@ function completeSCO() {
 // Close SCORM connection
 function terminateSCORM() {
   const api = getAPI();
-  if (api) {
+  if (api && sessionStartTime && !isTerminated) {
+    isTerminated = true;
     clearInterval(sessionTimerInterval);
+    saveSessionTime(api);
     api.LMSFinish("");
   }
 }
 
 // Initialize SCORM when the page loads
 window.addEventListener("load", initializeSCORM);
-window.addEventListener("unload", terminateSCORM);
+// "unload" is unreliable in modern browsers: pagehide/beforeunload are the supported signals
+window.addEventListener("pagehide", terminateSCORM);
+window.addEventListener("beforeunload", terminateSCORM);
 
 // Function to check entered code and mark as complete if correct
 function validateCompletionCode(enteredCode, correctCode) {
@@ -174,15 +180,19 @@ function initializeSCORM() {
 var sessionStartTime;
 var sessionTimerInterval;
 
+var isTerminated = false;
+
+function saveSessionTime(api) {
+  const elapsedSeconds = Math.floor((new Date() - sessionStartTime) / 1000);
+  api.SetValue("cmi.session_time", formatTime(elapsedSeconds));
+}
+
 // Track time spent in the module
 function trackTime() {
   sessionTimerInterval = setInterval(function() {
     const api = getAPI();
     if (api) {
-      const currentTime = new Date();
-      const elapsedSeconds = Math.floor((currentTime - sessionStartTime) / 1000);
-      const formattedTime = formatTime(elapsedSeconds);
-      api.SetValue("cmi.session_time", formattedTime);
+      saveSessionTime(api);
       api.Commit("");
     }
   }, 3000); // Update every 3 seconds
@@ -210,13 +220,17 @@ function completeSCO() {
 // Close SCORM connection
 function terminateSCORM() {
   const api = getAPI();
-  if (api) {
+  if (api && sessionStartTime && !isTerminated) {
+    isTerminated = true;
     clearInterval(sessionTimerInterval);
+    saveSessionTime(api);
     api.Terminate("");
   }
 }
 
 // Initialize SCORM when the page loads
 window.addEventListener("load", initializeSCORM);
-window.addEventListener("unload", terminateSCORM);
+// "unload" is unreliable in modern browsers: pagehide/beforeunload are the supported signals
+window.addEventListener("pagehide", terminateSCORM);
+window.addEventListener("beforeunload", terminateSCORM);
 `;
