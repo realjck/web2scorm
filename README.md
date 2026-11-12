@@ -39,6 +39,14 @@ npm install
 npm run dev
 ```
 
+4. Run the tests (Vitest) and the linter:
+```bash
+npm test
+npm run lint
+```
+
+The tests generate real SCORM packages and run them in jsdom against a mock LMS. Both commands also run in CI and block the deployment on failure.
+
 The application is built using React and TypeScript. It runs entirely on the frontend, with no backend components. All features, including SCORM package generation and content handling, are performed client-side directly in the browser.
 
 ## Suggestions and Contributions
