@@ -42,6 +42,15 @@ describe.each([
     expect(terminate).toBeGreaterThan(setTime);
   });
 
+  it('does not write to the LMS periodically while the learner is active', async () => {
+    const { api } = await runPackage({ scormVersion });
+    const callsAfterInit = api.calls.length;
+
+    await new Promise((resolve) => setTimeout(resolve, 3500));
+
+    expect(api.calls.slice(callsAfterInit)).toEqual([]);
+  }, 10000);
+
   it('terminates only once when several unload events fire', async () => {
     const { window, api } = await runPackage({ scormVersion });
 

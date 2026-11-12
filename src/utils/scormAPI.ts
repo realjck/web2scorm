@@ -51,17 +51,14 @@ function initializeSCORM() {
     if (status === "" || status === "not attempted") {
       api.LMSSetValue("cmi.core.lesson_status", "incomplete");
     }
-    // Set session start time
+    // Session time is computed from this and saved once, when terminating
     sessionStartTime = new Date();
-    // Start tracking time
-    trackTime();
   } else {
     console.error("SCORM API not found");
   }
 }
 
 var sessionStartTime;
-var sessionTimerInterval;
 
 var isTerminated = false;
 
@@ -70,13 +67,6 @@ function saveSessionTime(api) {
   api.LMSSetValue("cmi.core.session_time", formatTime(elapsedSeconds));
 }
 
-// Track time spent in the module
-function trackTime() {
-  sessionTimerInterval = setInterval(function() {
-    const api = getAPI();
-    if (api) saveSessionTime(api);
-  }, 3000); // Update every 3 seconds
-}
 
 // Format time as HH:MM:SS
 function formatTime(timeInSeconds) {
@@ -103,7 +93,6 @@ function terminateSCORM() {
   const api = getAPI();
   if (api && sessionStartTime && !isTerminated) {
     isTerminated = true;
-    clearInterval(sessionTimerInterval);
     saveSessionTime(api);
     api.LMSFinish("");
   }
@@ -168,17 +157,14 @@ function initializeSCORM() {
     if (status === "" || status === "unknown" || status === "not attempted") {
       api.SetValue("cmi.completion_status", "incomplete");
     }
-    // Set session start time
+    // Session time is computed from this and saved once, when terminating
     sessionStartTime = new Date();
-    // Start tracking time
-    trackTime();
   } else {
     console.error("SCORM 2004 API not found");
   }
 }
 
 var sessionStartTime;
-var sessionTimerInterval;
 
 var isTerminated = false;
 
@@ -187,16 +173,6 @@ function saveSessionTime(api) {
   api.SetValue("cmi.session_time", formatTime(elapsedSeconds));
 }
 
-// Track time spent in the module
-function trackTime() {
-  sessionTimerInterval = setInterval(function() {
-    const api = getAPI();
-    if (api) {
-      saveSessionTime(api);
-      api.Commit("");
-    }
-  }, 3000); // Update every 3 seconds
-}
 
 // Format time as ISO 8601 for SCORM 2004
 function formatTime(timeInSeconds) {
@@ -222,7 +198,6 @@ function terminateSCORM() {
   const api = getAPI();
   if (api && sessionStartTime && !isTerminated) {
     isTerminated = true;
-    clearInterval(sessionTimerInterval);
     saveSessionTime(api);
     api.Terminate("");
   }
