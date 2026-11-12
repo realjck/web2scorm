@@ -46,8 +46,11 @@ function initializeSCORM() {
   const api = getAPI();
   if (api) {
     api.LMSInitialize("");
-    // Set initial status to "incomplete"
-    api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    // Only a first attempt becomes "incomplete": never downgrade a previous result on relaunch
+    var status = api.LMSGetValue("cmi.core.lesson_status");
+    if (status === "" || status === "not attempted") {
+      api.LMSSetValue("cmi.core.lesson_status", "incomplete");
+    }
     // Set session start time
     sessionStartTime = new Date();
     // Start tracking time
@@ -154,9 +157,11 @@ function initializeSCORM() {
   const api = getAPI();
   if (api) {
     api.Initialize("");
-    // Set initial status to "incomplete"
-    api.SetValue("cmi.completion_status", "incomplete");
-    api.SetValue("cmi.success_status", "unknown");
+    // Only a first attempt becomes "incomplete": never downgrade a previous result on relaunch
+    var status = api.GetValue("cmi.completion_status");
+    if (status === "" || status === "unknown" || status === "not attempted") {
+      api.SetValue("cmi.completion_status", "incomplete");
+    }
     // Set session start time
     sessionStartTime = new Date();
     // Start tracking time
