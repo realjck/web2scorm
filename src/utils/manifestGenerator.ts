@@ -12,6 +12,20 @@
  */
 import { ScormFormData } from '@/types/scorm';
 
+const DEFAULT_DURATION_MINUTES = 30;
+
+/** Parses the duration field (minutes), falling back to the default when empty or invalid. */
+const durationMinutes = (duration: string): number => {
+  const minutes = parseInt(duration, 10);
+  return minutes > 0 ? minutes : DEFAULT_DURATION_MINUTES;
+};
+
+/** Minutes as HH:MM:SS, for the SCORM 1.2 LOM datetime. */
+const toClockTime = (minutes: number): string => {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${pad(Math.floor(minutes / 60))}:${pad(minutes % 60)}:00`;
+};
+
 // Generate imsmanifest.xml for SCORM 1.2
 export const generateScorm12Manifest = (formData: ScormFormData): string => {
   const uniqueId = "SCORM_" + Date.now();
@@ -41,7 +55,7 @@ export const generateScorm12Manifest = (formData: ScormFormData): string => {
       </general>
       <educational>
         <typicallearningtime>
-          <datetime>${escapeXml(formData.duration || "0:30")}</datetime>
+          <datetime>${toClockTime(durationMinutes(formData.duration))}</datetime>
         </typicallearningtime>
       </educational>
     </lom>
@@ -99,7 +113,7 @@ export const generateScorm2004Manifest = (formData: ScormFormData): string => {
       </general>
       <educational>
         <typicalLearningTime>
-          <duration>${escapeXml(formData.duration || "PT30M")}</duration>
+          <duration>PT${durationMinutes(formData.duration)}M</duration>
         </typicalLearningTime>
       </educational>
     </lom>
