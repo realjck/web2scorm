@@ -297,7 +297,6 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
     ${packageType === 'iframe-with-code' ? `
     // Variables for iframe-with-code mode
     const correctCodeHash = "${hashedCode}";
-    let isCompleted = false;
     const completionSection = document.getElementById('completion-section');
     const validateBtn = document.getElementById('validate-btn');
     const codeInput = document.getElementById('completion-code');
@@ -341,7 +340,6 @@ export const generateIndexHtml = async (formData: ScormFormData): Promise<string
       const enteredCodeHash = await sha256(enteredCode);
       
       if (enteredCodeHash === correctCodeHash) {
-        isCompleted = true;
         showAlert(${toInlineJson(formData.alertMessageRight || "Congratulations!")}, true);
         contentFrame.classList.add('hidden');
         completionSection.classList.remove('hidden');

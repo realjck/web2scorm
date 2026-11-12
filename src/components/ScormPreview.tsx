@@ -35,7 +35,6 @@ const ScormPreview = forwardRef<ScormPreviewHandle, ScormPreviewProps>(({ formDa
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [status, setStatus] = useState('incomplete');
 
   // Function to reset the preview state
   const resetPreview = () => {
@@ -43,7 +42,6 @@ const ScormPreview = forwardRef<ScormPreviewHandle, ScormPreviewProps>(({ formDa
     setIsCompleted(false);
     setShowAlert(false);
     setAlertMessage('');
-    setStatus('incomplete');
     // Attendre que isCompleted soit mis à jour avant de réafficher l'iframe
     setTimeout(() => {
       renderIframeContent();
@@ -58,7 +56,6 @@ const ScormPreview = forwardRef<ScormPreviewHandle, ScormPreviewProps>(({ formDa
   const handleValidate = () => {
     if (normalizeCompletionCode(enteredCode) === normalizeCompletionCode(formData.completionCode)) {
       setIsCompleted(true);
-      setStatus('completed');
       setShowAlert(true);
       setAlertMessage(formData.alertMessageRight || "Congratulations!");
     } else {
@@ -103,8 +100,7 @@ const ScormPreview = forwardRef<ScormPreviewHandle, ScormPreviewProps>(({ formDa
   // Render iframe content whenever it changes
   useEffect(() => {
     renderIframeContent();
-    // Reset status to incomplete when content changes
-    setStatus('incomplete');
+    // Reset completion when content changes
     setIsCompleted(false);
     setShowAlert(false);
   }, [formData.iframeContent]);
