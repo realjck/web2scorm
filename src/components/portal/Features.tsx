@@ -10,8 +10,8 @@
  *
  * See <https://www.gnu.org/licenses/> for more details.
  */
-import featureImage1 from '@/assets/portal/feature-tracking.png';
-import featureImage2 from '@/assets/portal/feature-completion.png';
+import featureImage1 from '@/assets/portal/feature-tracking.webp';
+import featureImage2 from '@/assets/portal/feature-completion.webp';
 
 const Features = () => {
   return (

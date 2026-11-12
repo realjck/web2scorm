@@ -13,7 +13,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Menu, X, Github } from 'lucide-react';
-import logo from '@/assets/portal/web2scorm_logo_1000px.png';
+import logo from '@/assets/portal/web2scorm_logo.webp';
 import packageJson from '../../package.json';
 
 export const GITHUB_URL = 'https://github.com/realjck/web2scorm';

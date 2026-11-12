@@ -10,7 +10,7 @@
  *
  * See <https://www.gnu.org/licenses/> for more details.
  */
-import assessmentImage from '@/assets/portal/feature-assessment.png';
+import assessmentImage from '@/assets/portal/feature-assessment.webp';
 
 const FutureDevelopment = () => {
   return (

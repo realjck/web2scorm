@@ -10,7 +10,7 @@
  *
  * See <https://www.gnu.org/licenses/> for more details.
  */
-import heroImage from '@/assets/portal/web2scorm_illustration.png';
+import heroImage from '@/assets/portal/web2scorm_illustration.webp';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Github } from 'lucide-react';
 import { GITHUB_URL } from '@/components/Navbar';

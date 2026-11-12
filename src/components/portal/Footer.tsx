@@ -13,7 +13,7 @@
 import { Link } from 'react-router-dom';
 import { Github } from 'lucide-react';
 import { GITHUB_URL } from '@/components/Navbar';
-import logo from '@/assets/portal/web2scorm_logo_white_500px.png';
+import logo from '@/assets/portal/web2scorm_logo_white.webp';
 
 const Footer = () => {
   return (
